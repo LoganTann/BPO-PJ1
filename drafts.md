@@ -54,3 +54,121 @@
 * bilan de projet (ce qui peut être amélioré, ou difficultés)
 
 Rapport en format PDF, dossier nommé src contenant tous les fichiers java, qui doivent refléter la décomposition en paquetages (aka. format d'un pj eclipse)
+
+
+## le tout en pseudo code 
+```
+# pré diagramme UML + pseudo code possible du jeu
+
+carte = int
+
+objet jeu ? : ou app.
+	- nombre de cartes
+	main() :
+		joueur("NORD")
+		joueur("SUD")
+		boolean tictac = true;
+		while playing : 	
+			sout NORD
+			sout SUD
+			if (tictac) {
+				loop(NORD, SUD);
+			} else {
+				loop(SUD, NORD);
+			}
+			tictac = !tictac;
+		
+	loop(me, you) :
+		// sortie
+		sout me.handToString()
+		
+		// lecture entrée
+		boolean error = false
+		String input;
+		(si ne peut pas jouer deux cartes, alors throw PerduException(me.getname))
+		do {
+			sout (error) ? "#>" : ">";
+			input = sc.next("");
+			error = !formatValide(input);
+			
+			if (error) continue; // relancer la lecture
+			boolean playedEnemy = false;
+			(pour chaque action : )
+				si poser sur sa base : 
+					si peut pas poser, error = true, continue
+				si base adverse : 
+					si playedEnemy, error = true, continue
+					si peut pas poser, idem
+					playedEnemy = true
+			if (playedEnemy) (compléter 6 cartes)
+			else (piocher 2 cases)
+			idem pour la base de l'autre
+			break; (car on aurait eu continue avant en cas de pb)
+		} while (1)
+		
+		// interprétation du résultat
+		
+	isValid(input) : 
+		true si entrée valide, false sinon
+		tba
+
+objet joueur : 
+	- Paquet packet
+	- ArrayList<int> hand;
+	- Pile pileASC;
+	- Pile pileDESC;
+	- String name;
+	// init
+	constructeur (playerName) : 
+		new Paquet()
+		new pile(ASC)
+		new pile(DESC)
+		déplacer paquet[0] -> pileASC
+		déplacer paquet[59] -> pileDESC
+		paquet.shuffle()
+		répéter 5 fois : déplacer paquet [0] -> main
+		initialiser playerName
+	
+	// affichage
+	toString() : 
+		playerName
+		+ pileASC.toString()
+		+ pileDESC.toString()
+		+ this.cardsCountToString()
+	cardsCountToString() : "(m6p52)"
+	handToString() : "cartes ${this.name} {" + foreach elems of this.hand + "}"
+	
+	// getters/setters
+	getName()
+	
+objet Pile :
+	- ...
+	- order 
+	
+	int getTopValue()
+	peutPoserSurMoi(coup, pile AutrePile):
+		if this.topValue % 10 == coup % 10 return true;
+		// note : redondance. Il suffirait d'inverser cette condition par fx suivante
+		if this.order == DESC:
+			return this.topValue > coup && autrePile.getTopValue < coup
+		else return this.topValue < coup && autrePile.getTopValue > coup
+		
+	peutPoserSurAdversaire(coup):
+		if this.order == asc:
+			return this.topValue > coup && autrePile.getTopValue < coup
+		else return this.topValue < coup && autrePile.getTopValue > coup
+		
+
+objet Paquet : 
+	- ArrayList<int> content;
+	- shuffle() : mélange le paquet de cartes
+
+Initialisation de la partie : 
+	- déclaration de NORD et SUD (joueur)
+
+
+tests unitaires possible : 
+	- vérification du push/pop des cartes + déplacement vers la pile d'un joueur
+	- vérification de la bonne génération du paquet (sorted)
+	- vérification du mélange des cartes
+```
