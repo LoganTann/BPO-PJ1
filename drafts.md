@@ -29,7 +29,7 @@
 	* pour pouvoir poser une carte sur sa base:  
 		* il faut que celle-ci ait une valeur plus grande que celle qui est déjà posée.
 		* OU que la valeur corresponde à la dizaine du dessous (si carte sur la table = 29, alors je peux poser la carte 19)
-	*  pour pouvoir poser une carte sur sa base adverse :
+	*  pour pouvoir piocher une carte sur sa base adverse :
 		* il ne peut jouer qu'une seule carte
 		* Elle doit être plus petite sur la pile ascendante, et plus grande sur la pile descendante.
 * Si le joueur a joué uniquement sur ses propres bases, il pioche alors deux cartes. 
