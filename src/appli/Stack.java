@@ -1,40 +1,30 @@
 package appli;
 
-import java.util.ArrayList;
-
 public class Stack {
 
-    public enum TypeStack { ASC, DESC };
+    public enum TypeStack { ASC, DESC }
 
+    /** TypeStack : définit si la pile est ascendante (ASC) ou (DESC) */
     private TypeStack type;
-    private ArrayList<Integer> playedCards;
-    private Pack pack;
 
-    public Stack(TypeStack type, Pack p) {
+
+    /** Dans une pile de carte, et dans le contexte de l'exercice, stocker uniquement la dernière carte est suffisant */
+    private int topCard = -1;
+
+    /**
+     * Stack : constitue une pile ascendante ou descendante
+     * @param type : cf. javadoc de Stack.TypeStack
+     */
+    public Stack(TypeStack type) {
         this.type = type;
-        this.pack = p;
-        this.playedCards = new ArrayList<Integer>();
     }
 
-    public Pack getPack() {
-        return this.pack;
-    }
-
-    public void addCard(int carte) {
-        this.playedCards.add(carte);
-    }
-
-    public ArrayList<Integer> getPlayedCards() {
-        return this.playedCards;
+    public void addCard(int card) {
+        this.topCard = card;
     }
 
     public int getCardOnTop() {
-        int i = this.playedCards.size();
-        return this.playedCards.get(i - 1);
-    }
-
-    public boolean exists(int card) {
-        return this.getPlayedCards().contains(card);
+        return this.topCard;
     }
 
     public String toString() {
