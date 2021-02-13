@@ -12,13 +12,13 @@ public class Player {
     private final String name;
 
     /** pack : la pioche du joueur */
-    private final Pack pack;
+    private Pack pack;
 
-    /** stackASC / stackDESC : les deux pile de cartes du joueur */
-    private final Stack stackASC, stackDESC;
+    /** stackASC / stackDESC : les deux piles de cartes du joueur */
+    private Stack stackASC, stackDESC;
 
     /** hand : les cartes qui se trouvent dans la main du joueur*/
-    private final ArrayList<Integer> hand;
+    private ArrayList<Integer> hand;
 
     /***
      * Constructeur de l'entité Joueur
@@ -88,6 +88,9 @@ public class Player {
         // cast nécessaire pour éviter confusion avec la surcharge .remove(int index);
         return this.hand.remove((Object) cardValue);
     }
+    public boolean canRemoveFromHand(int cardValue) {
+        return this.hand.contains(cardValue);
+    }
 
     public void putDown(Player cardSource, Action theAction) throws BadMoveException {
         int card = theAction.getCard();
@@ -102,5 +105,26 @@ public class Player {
     }
 
     public void save() {
+    }
+
+
+
+    /*                      /!\ ATTENTION : /!\
+       ces setteurs sont utilisés seulement à des fins de tests unitaires
+    */
+    public void setPack(Pack pack) {
+        this.pack = pack;
+    }
+
+    public void setStackASC(Stack stackASC) {
+        this.stackASC = stackASC;
+    }
+
+    public void setStackDESC(Stack stackDESC) {
+        this.stackDESC = stackDESC;
+    }
+
+    public void setHand(ArrayList<Integer> hand) {
+        this.hand = hand;
     }
 }
