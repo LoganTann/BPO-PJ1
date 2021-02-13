@@ -1,20 +1,41 @@
 package appli;
 
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 
 public class Pack {
+    public static int DEFAULT_FIRST_CARD = 1;
+    public static int DEFAULT_LAST_CARD = 60;
 
-    private ArrayList<Integer> pack;
+    /**
+     * @implNote Usage de linkedList car la plupart des opérations sont les insertions/délétions
+     *      au cours d'une partie
+     */
+    private final LinkedList<Integer> pack = new LinkedList<>();
 
+    /**
+     * Crée un nouveau paquet de carte donné la valeur de la première et dernière carte
+     * @param min valeur de la première carte
+     * @param max valeur de la dernière carte
+     * @pre 0 <= min <= max
+     * @see Pack() pour appeler ce constructeur avec les valeurs par défaut
+     */
     public Pack(int min, int max) {
-        // todo : assert min <= max
-        this.pack = new ArrayList<>();
+        assert 0 <= min : "La valeur minimale ne doit pas être négative";
+        assert min <= max : "La valeur maximale doit être plus grande que la valeur minimale";
+        assert this.pack.size() != 0 : "Ce n'est pas la première fois que vous appelez ce constructeur, ou bien vous avez appliqué des modifs non autorisées";
 
-        for (int i = min; i <= max; ++i) {
-            pack.add(i);
+        for(int i = min; i <= max; ++i) {
+            this.pack.add(i);
         }
     }
+    /**
+     * Crée un nouveau paquet de carte (cartes numérotées de 1 à 60 par défaut)
+     */
+    public Pack() {
+        this(DEFAULT_FIRST_CARD, DEFAULT_LAST_CARD);
+    }
+
 
     /* Fonctions pour intervenir sur le paquet ----------------- */
 
@@ -62,11 +83,16 @@ public class Pack {
 
     /* Fonctions pour obtenir des infos sur le paquet ----------------- */
 
-    public ArrayList<Integer> getPack() {
+    public LinkedList<Integer> getPack() {
         return this.pack;
     }
 
     public int getPackLength() {
         return this.pack.size();
     }
+
+    public boolean exists(int card) {
+        return this.pack.contains(card);
+    }
+
 }

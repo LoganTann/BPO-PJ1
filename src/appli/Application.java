@@ -10,59 +10,71 @@ public class Application {
         Player SUD = new Player("SUD");
         boolean NORD_plays = true;
 
-        while (true) {
+        boolean isPlaying = true;
+        while (isPlaying) {
             // affichage des infos des joueurs :
             System.out.println(NORD);
             System.out.println(SUD);
-            // C'est le tour de nord ou sud :
-            if (NORD_plays) {
-                loop(NORD, SUD);
-            } else {
-                loop(SUD, NORD);
+
+            try {
+                // C'est le tour de nord ou sud :
+                if (NORD_plays) {
+                    turn(NORD, SUD);
+                } else {
+                    turn(SUD, NORD);
+                }
+            } catch (WinnerException thePlayer) {
+                System.out.println("partie finie, " + thePlayer.toString() + " a gagné");
+                isPlaying = false;
+            } catch (LoserException thePlayer) {
+                String winnerName = thePlayer.toString().equals(NORD.getName()) ? SUD.getName() : NORD.getName();
+                System.out.println("partie finie, " + winnerName + " a gagné");
+                isPlaying = false;
             }
+
             NORD_plays = !NORD_plays;
-            // todo : gestion d'erreurs en cas de loserException ou winnerException
         }
     }
 
-    public static void loop(Player me, Player you) {
-        // TODO : throw un loserException ou winnerException (créer ces types d'exceptions)
+    public static void turn(Player me, Player opponent) throws WinnerException, LoserException {
 
         System.out.println(me.hand_toString());
 
-        boolean error = false;
+        boolean showErrorPrompt = false, requestValidMove = true;
         String input;
         Scanner sc = new Scanner(System.in);
 
-        // TODO : (si ne peut pas jouer deux cartes, alors throw PerduException(me.getname))
+        // TODO : (si ne peut pas jouer deux cartes, alors throw new PerduException(me.getName())
 
-        // la boucle suivante sera arrêtée lorsque l'entrée sera valide et les coups joués.
-        while (true) {
-            System.out.print((error) ? "#> " : "> ");
-
-            // TODO : try catch ? Le soucis, c'est que si on peut pas lire, on fais quoi ? car il ne faut pas afficher le prompt.
+        while (requestValidMove) {
+            System.out.print((showErrorPrompt) ? "#> " : "> ");
             input = sc.nextLine();
 
+            // Interprétation de l'entrée
             ArrayList<Action> parsedActions = parseInput(input);
-            error = parsedActions.size() < 2;
-            if (error) continue;
+            showErrorPrompt = parsedActions.size() < 2;
+            if (showErrorPrompt) continue;
 
-            /** indique si on a posé une carte sur un tas ennemi
-             en effet, on ne peut poser qu'une seule carte dans ce tas par tour ! */
+            // Exécution de l'entrée
             boolean playedEnemy = false;
-
-            // TODO : me.save(); you.save();
+            me.save();
+            opponent.save();
             try {
                 for (Action action: parsedActions) {
                     playedEnemy = action.handlePlayingInEnemyStack(playedEnemy);
-                    action.execute(me, you);
+                    action.execute(me, opponent);
                 }
             } catch (BadMoveException err) {
-                // TODO : me.restoreSave(); you.restoreSave();
-                error = true;
+                me.restoreSave();
+                opponent.restoreSave();
+                showErrorPrompt = true;
                 continue;
             }
 
+            // Conditions de fin de tour
+            if (me.isHandEmpty()) {
+                throw new WinnerException(me.getName());
+            }
             if (playedEnemy) {
                 me.addCardsToHaveSixInHand();
             } else {
@@ -70,7 +82,8 @@ public class Application {
                 me.pickCardAndAddInHand();
             }
 
-            break;
+            // fin du tour
+            requestValidMove = false;
         }
 
     }
@@ -83,7 +96,7 @@ public class Application {
      */
     public static ArrayList<Action> parseInput(String input) {
         // todo : rendre + beau ce code
-        ArrayList<Action> actions = new ArrayList<Action>();
+        ArrayList<Action> actions = new ArrayList<>();
 
         String[] coups = input.split(" ");
         for (String coup : coups) {
