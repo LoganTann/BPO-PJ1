@@ -1,6 +1,5 @@
 package appli;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 
@@ -12,7 +11,7 @@ public class Pack {
      * @implNote Usage de linkedList car la plupart des opérations sont les insertions/délétions
      *      au cours d'une partie
      */
-    private LinkedList<Integer> pack = new LinkedList<Integer>();
+    private final LinkedList<Integer> pack = new LinkedList<>();
 
     /**
      * Crée un nouveau paquet de carte donné la valeur de la première et dernière carte
@@ -24,10 +23,8 @@ public class Pack {
     public Pack(int min, int max) {
         assert 0 <= min : "La valeur minimale ne doit pas être négative";
         assert min <= max : "La valeur maximale doit être plus grande que la valeur minimale";
+        assert this.pack.size() != 0 : "Ce n'est pas la première fois que vous appelez ce constructeur, ou bien vous avez appliqué des modifs non autorisées";
 
-        if (this.pack.size() != 0) {
-            this.pack.clear();
-        }
         for(int i = min; i <= max; ++i) {
             this.pack.add(i);
         }
@@ -86,7 +83,7 @@ public class Pack {
 
     /* Fonctions pour obtenir des infos sur le paquet ----------------- */
 
-    public ArrayList<Integer> getPack() {
+    public LinkedList<Integer> getPack() {
         return this.pack;
     }
 

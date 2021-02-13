@@ -1,16 +1,24 @@
 package appli;
 
 /**
+ *
  * @author Antoine <antoine@jiveoff.fr> on 01/02/2021
  * @project BPO-PJ1
  */
 public class Action {
+    private final int card;
+    private final Stack.TypeStack type;
+    private final boolean playsInEnemyStack;
 
-
-    int card;
-    Stack.TypeStack type;
-    boolean playsInEnemyStack;
-
+    /**
+     * CLASSE Action : définit une action possible du joueur (tel que poser la carte 4 sur le paquet adverse).
+     * Les méthodes permettent d'effectuer des vérifications de jouabilité. Les arguments de ce constructeurs
+     * constituent les uniques variables privées de la classe
+     * @param card      Numéro de la carte source qui sera déplacée
+     * @param type      définit dans quel type de pile cible la carte sera posée
+     * @param adverse   indique si la pile cible se trouve dans le camp ennemi (et traiter les règles supplémentaires en
+     *                  conséquence)
+     */
     Action(int card, Stack.TypeStack type, boolean adverse) {
         this.card = card;
         this.type = type;
@@ -25,10 +33,10 @@ public class Action {
         if (this.playsInEnemyStack) retval.append("’");
         return retval.toString();
     }
+
     public int getCard() {
         return card;
     }
-
     public Stack.TypeStack getType() {
         return type;
     }

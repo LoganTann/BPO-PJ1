@@ -8,10 +8,6 @@ import java.util.ArrayList;
  */
 public class Player {
 
-    // note : utilisation de final car intellij me le propose.
-    // Il semblerait que cela bloque uniquement la redéfinition,
-    // et non la modification des paramètres internes de l'objet
-
     /** name : son nom (attendu NORD ou SUD)*/
     private final String name;
 
@@ -54,6 +50,10 @@ public class Player {
                 + " (m" + this.hand.size() + "p" + this.pack.getPack().size() + ")";
     }
 
+    public String getName() {
+        return this.name;
+    }
+
     public String hand_toString() {
         // cartes NORD { 15 20 23 32 41 48 }
         StringBuilder retval = new StringBuilder("cartes ");
@@ -65,6 +65,10 @@ public class Player {
         }
         retval.append("}");
         return retval.toString();
+    }
+
+    public boolean isHandEmpty() {
+        return this.hand.isEmpty();
     }
 
     public void addCardsToHaveSixInHand() {
@@ -92,5 +96,11 @@ public class Player {
         }
         Stack target = this.getStack(theAction.getType());
         target.addCard(card);
+    }
+
+    public void restoreSave() {
+    }
+
+    public void save() {
     }
 }
