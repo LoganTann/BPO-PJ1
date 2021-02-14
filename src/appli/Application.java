@@ -1,11 +1,26 @@
 package appli;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Application {
 
+    public static boolean VERBOSE = false;
+
+    public static void init_VERBOSE(String[] args) {
+        for (String elem: args) {
+            if (elem.contains("-v") || elem.contains("--verbose")) {
+                VERBOSE = true;
+                System.out.println("#I : Mode verbeux activé");
+                break;
+            }
+        }
+    }
+
     public static void main(String[] args) {
+        init_VERBOSE(args);
+
         Player NORD = new Player("NORD");
         Player SUD = new Player("SUD");
         boolean NORD_plays = true;
@@ -37,7 +52,7 @@ public class Application {
     }
 
     public static void turn(Player me, Player opponent) throws WinnerException, LoserException {
-
+        me.sortHand();
         System.out.println(me.hand_toString());
 
         boolean showErrorPrompt = false, requestValidMove = true;
@@ -53,7 +68,10 @@ public class Application {
             // Interprétation de l'entrée
             ArrayList<Action> parsedActions = parseInput(input);
             showErrorPrompt = parsedActions.size() < 2;
-            if (showErrorPrompt) continue;
+            if (showErrorPrompt) {
+                if (VERBOSE) System.out.println("#E : Syntax error");
+                continue;
+            }
 
             // Exécution de l'entrée
             boolean playedEnemy = false;
@@ -68,6 +86,7 @@ public class Application {
                 me.restoreSave();
                 opponent.restoreSave();
                 showErrorPrompt = true;
+                if (VERBOSE) System.out.println("#E : " + err.toString());
                 continue;
             }
 
@@ -124,8 +143,9 @@ public class Application {
                 actions.clear();
                 return actions;
             }
-
-            actions.add(new Action(card, (coup.charAt(2) == '^' ? Stack.TypeStack.ASC : Stack.TypeStack.DESC), coup.length() > 3));
+            Action actionItem = new Action(card, (coup.charAt(2) == '^' ? Stack.TypeStack.ASC : Stack.TypeStack.DESC), coup.length() > 3);
+            if (VERBOSE) System.out.println("#I : le coup " + coup + " a été interprété comme " + actionItem);
+            actions.add(actionItem);
         }
         return actions;
     }

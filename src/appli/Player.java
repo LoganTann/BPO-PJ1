@@ -1,6 +1,7 @@
 package appli;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * @author Antoine <antoine@jiveoff.fr> on 01/02/2021
@@ -28,6 +29,7 @@ public class Player {
      * @param name son joli nom pour l'affichage
      */
     public Player(String name) {
+        assert name.length() < 5 : "Le nom ne doit pas excéder 4 caractères. Valeur conseillée : NORD ou SUD.";
         this.name = name;
 
         this.pack = new Pack(1, 60);
@@ -35,7 +37,7 @@ public class Player {
         this.stackDESC = new Stack(Stack.TypeStack.DESC);
 
         this.stackASC.addCard( this.pack.pickCard(0) );
-        this.stackASC.addCard( this.pack.pickLastCard() );
+        this.stackDESC.addCard( this.pack.pickLastCard() );
 
         // à partir du moment où on mélange, prendre la première carte équivaut à prendre une carte du paquet au hasard
         this.pack.shuffle();
@@ -49,8 +51,10 @@ public class Player {
 
     public String toString() {
         // possible todo : string builder pour impressionner le prof mm si c'est moche
-        return this.name + " " + stackASC.toString() + " " + stackDESC.toString()
-                + " (m" + this.hand.size() + "p" + this.pack.getPack().size() + ")";
+        String retval = String.format("%-5s", this.name);
+        retval += stackASC.toString() + " " + stackDESC.toString();
+        retval += " (m" + this.hand.size() + "p" + this.pack.getPack().size() + ")";
+        return retval;
     }
 
     public String getName() {
@@ -93,6 +97,10 @@ public class Player {
     }
     public boolean canRemoveFromHand(int cardValue) {
         return this.hand.contains(cardValue);
+    }
+
+    public void sortHand() {
+        Collections.sort(this.hand);
     }
 
     public void putDown(Player cardSource, Action theAction) throws BadMoveException {

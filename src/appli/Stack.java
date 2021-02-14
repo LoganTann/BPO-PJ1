@@ -13,12 +13,11 @@ public class Stack {
 
     /**
      * Stack : constitue une pile ascendante ou descendante
-     * @param type : cf. javadoc de Stack.TypeStack
+     * @param type : définit si la pile est ascendante (ASC) ou (DESC)
      */
     public Stack(TypeStack type) {
         this.type = type;
     }
-
 
     public Stack(Stack toClone) {
         this.type = toClone.type;
@@ -34,7 +33,8 @@ public class Stack {
     }
 
     public String toString() {
-        return ((type == TypeStack.ASC) ? "^" : "v") + "[" + this.getCardOnTop() + "]";
+        char operator = (type == TypeStack.ASC) ? '^' : 'v';
+        return String.format("%c[%02d]", operator, this.getCardOnTop());
     }
 
 }
