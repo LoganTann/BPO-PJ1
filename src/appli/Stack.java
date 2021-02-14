@@ -19,6 +19,12 @@ public class Stack {
         this.type = type;
     }
 
+
+    public Stack(Stack toClone) {
+        this.type = toClone.type;
+        this.topCard = toClone.topCard;
+    }
+
     public void addCard(int card) {
         this.topCard = card;
     }

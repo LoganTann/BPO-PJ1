@@ -13,12 +13,15 @@ public class Player {
 
     /** pack : la pioche du joueur */
     private Pack pack;
+    private Pack pack_save;
 
     /** stackASC / stackDESC : les deux piles de cartes du joueur */
     private Stack stackASC, stackDESC;
+    private Stack stackASC_save, stackDESC_save;
 
     /** hand : les cartes qui se trouvent dans la main du joueur*/
     private ArrayList<Integer> hand;
+    private ArrayList<Integer> hand_save;
 
     /***
      * Constructeur de l'entité Joueur
@@ -101,12 +104,18 @@ public class Player {
         target.addCard(card);
     }
 
-    public void restoreSave() {
-    }
-
     public void save() {
+        this.pack_save = new Pack(this.pack);
+        this.stackASC_save = new Stack(this.stackASC);
+        this.stackDESC_save = new Stack(this.stackDESC);
+        this.hand_save = new ArrayList<>(this.hand);
     }
-
+    public void restoreSave() {
+        this.pack = this.pack_save;
+        this.stackASC = this.stackASC_save;
+        this.stackDESC = this.stackDESC_save;
+        this.hand = this.hand_save;
+    }
 
 
     /*                      /!\ ATTENTION : /!\
