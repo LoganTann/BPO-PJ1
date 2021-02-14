@@ -87,6 +87,9 @@ public class Pack {
         return this.pickCard( 0);
     }
 
+    public boolean isEmpty() {
+        return this.pack.isEmpty();
+    }
 
     /* Fonctions pour obtenir des infos sur le paquet ----------------- */
 

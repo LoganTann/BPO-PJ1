@@ -1,7 +1,6 @@
 package appli;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class Application {
@@ -39,7 +38,7 @@ public class Application {
                     turn(SUD, NORD);
                 }
             } catch (WinnerException thePlayer) {
-                System.out.println("partie finie, " + thePlayer.toString() + " a gagné");
+                System.out.println("partie finie, " + thePlayer.getMessage() + " a gagné");
                 isPlaying = false;
             } catch (LoserException thePlayer) {
                 String winnerName = thePlayer.toString().equals(NORD.getName()) ? SUD.getName() : NORD.getName();
@@ -69,7 +68,7 @@ public class Application {
             ArrayList<Action> parsedActions = parseInput(input);
             showErrorPrompt = parsedActions.size() < 2;
             if (showErrorPrompt) {
-                if (VERBOSE) System.out.println("#E : Syntax error");
+                if (VERBOSE) System.out.println("#E : Syntax error or not enough moves");
                 continue;
             }
 
@@ -91,7 +90,7 @@ public class Application {
             }
 
             // Conditions de fin de tour
-            if (me.isHandEmpty()) {
+            if (me.hadNoMoreCards()) {
                 throw new WinnerException(me.getName());
             }
             if (playedEnemy) {
@@ -114,40 +113,44 @@ public class Application {
      * @return un ArrayList contenant chaque actions (type Action). Vide si entrée invalide.
      */
     public static ArrayList<Action> parseInput(String input) {
-        // todo : rendre + beau ce code
-        ArrayList<Action> actions = new ArrayList<>();
+        ArrayList<Action> retval = new ArrayList<>();
 
         String[] coups = input.split(" ");
         for (String coup : coups) {
-            // 02v ou 04^’ ou 59v
 
             int card;
             try {
                 card = Integer.parseInt(coup.substring(0, 2));
             } catch(NumberFormatException e) {
-                actions.clear();
-                return actions;
+                if (VERBOSE) System.out.println("#E : (syntax) " + e);
+                retval.clear();
+                return retval;
             }
 
             try {
                 if (coup.charAt(2) != '^') {
                     if (coup.charAt(2) != 'v') {
-                        actions.clear();
-                        return actions;
+                        if (VERBOSE) System.out.println("#E : (syntax) the character that precedes the number have to be ^ or v, got " + coup.charAt(2));
+                        retval.clear();
+                        return retval;
                     }
                 }
                 if (coup.length() > 3 && coup.charAt(3) != '’') {
-                    actions.clear();
-                    return actions;
+                    if (VERBOSE) System.out.println("#E : (syntax) the second character that precedes the number have to be ’, got " + coup.charAt(3));
+                    retval.clear();
+                    return retval;
                 }
             } catch(IndexOutOfBoundsException e) {
-                actions.clear();
-                return actions;
+                if (VERBOSE) System.out.println("#E : (syntax) the character that precedes the number have to be ^ or v, got nothing");
+                retval.clear();
+                return retval;
             }
-            Action actionItem = new Action(card, (coup.charAt(2) == '^' ? Stack.TypeStack.ASC : Stack.TypeStack.DESC), coup.length() > 3);
-            if (VERBOSE) System.out.println("#I : le coup " + coup + " a été interprété comme " + actionItem);
-            actions.add(actionItem);
+
+            // si on en est là, c'est que la syntaxe est valide
+            Stack.TypeStack type = coup.charAt(2) == '^' ? Stack.TypeStack.ASC : Stack.TypeStack.DESC;
+            retval.add(new Action(card, type, coup.length() > 3));
         }
-        return actions;
+        if (VERBOSE) System.out.println("#I : vous avez joué : " + retval);
+        return retval;
     }
 }

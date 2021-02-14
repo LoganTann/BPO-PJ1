@@ -74,8 +74,8 @@ public class Player {
         return retval.toString();
     }
 
-    public boolean isHandEmpty() {
-        return this.hand.isEmpty();
+    public boolean hadNoMoreCards() {
+        return this.pack.isEmpty();
     }
 
     public void addCardsToHaveSixInHand() {
@@ -88,7 +88,7 @@ public class Player {
     }
 
     public Stack getStack(Stack.TypeStack type) {
-        return (type == Stack.TypeStack.ASC) ? stackASC : stackDESC;
+        return (type == Stack.TypeStack.ASC) ? this.stackASC : this.stackDESC;
     }
 
     public boolean removeCardFromHand(int cardValue) {

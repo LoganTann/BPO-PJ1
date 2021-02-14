@@ -63,14 +63,26 @@ public class Action {
         if (this.playsInEnemyStack) {
             Stack StackAsc = you.getStack(Stack.TypeStack.ASC), StackDesc = you.getStack(Stack.TypeStack.DESC);
             if (this.card > StackAsc.getCardOnTop() || this.card < StackDesc.getCardOnTop()) {
-                throw new BadMoveException("Le coup ne respecte pas la règle « la carte doit être plus petite sur la pile ascendante adverse, et plus grande sur la pile descendante adverse » ");
+                String sout = "Le coup ne respecte pas la règle « la carte doit être plus petite sur la pile ascendante"
+                            + " adverse, et plus grande sur la pile descendante adverse », ou bien vous avez joué plus "
+                            + "d'une fois la même carte \n";
+                sout += String.format(
+                            "Dump : DESC=%02d card=%02d ASC=%02d",
+                            StackAsc.getCardOnTop(), this.card, StackDesc.getCardOnTop()
+                );
+                throw new BadMoveException(sout);
             }
         } else {
             Stack StackAsc = me.getStack(Stack.TypeStack.ASC), StackDesc = me.getStack(Stack.TypeStack.DESC);
             if (this.card < StackAsc.getCardOnTop() || this.card > StackDesc.getCardOnTop()) {
                 int top = (this.type == Stack.TypeStack.ASC) ? StackAsc.getCardOnTop() : StackDesc.getCardOnTop();
                 if (this.card % 10 != top % 10) {
-                    throw new BadMoveException("Le coup ne respecte ni la règle « la carte doit être plus grande sur la pile ascendante, et plus petite sur la pile descendante », ni la règle des mutiples de dix");
+                    String sout = "Le coup ne respecte pas la règle « la carte doit être plus grande sur la pile "
+                            + "ascendante adverse, et plus petite sur la pile descendante adverse », ni la règle des"
+                            + " multiples de dix, ou bien vous avez joué plus d'une fois la même carte \n";
+                    sout += String.format("Dump : DESC=%02d card=%02d ASC=%02d",
+                            this.card, StackAsc.getCardOnTop(), StackDesc.getCardOnTop());
+                    throw new BadMoveException(sout);
                 }
             }
         }
