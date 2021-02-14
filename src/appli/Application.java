@@ -120,9 +120,10 @@ public class Application {
         String[] coups = input.split(" ");
         for (String coup : coups) {
             // 02v ou 04^’ ou 59v
+
             int card;
             try {
-                card = Integer.parseInt(coup.substring(0, 1));
+                card = Integer.parseInt(coup.substring(0, 2));
             } catch(NumberFormatException e) {
                 actions.clear();
                 return actions;
