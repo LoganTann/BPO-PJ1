@@ -14,7 +14,7 @@ public class PackTest {
     @Test
     public void testConstants() {
         assertEquals(Pack.DEFAULT_FIRST_CARD, 1);
-        assertEquals(Pack.DEFAULT_FIRST_CARD, 60);
+        assertEquals(Pack.DEFAULT_LAST_CARD, 60);
     }
 
     @Test
