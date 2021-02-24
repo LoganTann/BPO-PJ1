@@ -11,7 +11,7 @@ public class Application {
         for (String elem: args) {
             if (elem.contains("-v") || elem.contains("--verbose")) {
                 VERBOSE = true;
-                System.out.println("#I : Mode verbeux activé");
+                System.out.println("$I : Mode verbeux activé");
                 break;
             }
         }
@@ -68,7 +68,7 @@ public class Application {
             ArrayList<Action> parsedActions = parseInput(input);
             showErrorPrompt = parsedActions.size() < 2;
             if (showErrorPrompt) {
-                if (VERBOSE) System.out.println("#E : Syntax error or not enough moves");
+                if (VERBOSE) System.out.println("$E : Syntax error or not enough moves");
                 continue;
             }
 
@@ -85,7 +85,7 @@ public class Application {
                 me.restoreSave();
                 opponent.restoreSave();
                 showErrorPrompt = true;
-                if (VERBOSE) System.out.println("#E : " + err.toString());
+                if (VERBOSE) System.out.println("$E : " + err.toString());
                 continue;
             }
 
@@ -121,8 +121,8 @@ public class Application {
             int card;
             try {
                 card = Integer.parseInt(coup.substring(0, 2));
-            } catch(NumberFormatException e) {
-                if (VERBOSE) System.out.println("#E : (syntax) " + e);
+            } catch(NumberFormatException | StringIndexOutOfBoundsException e) {
+                if (VERBOSE) System.out.println("$E : (syntax) " + e);
                 retval.clear();
                 return retval;
             }
@@ -130,18 +130,18 @@ public class Application {
             try {
                 if (coup.charAt(2) != '^') {
                     if (coup.charAt(2) != 'v') {
-                        if (VERBOSE) System.out.println("#E : (syntax) the character that precedes the number have to be ^ or v, got " + coup.charAt(2));
+                        if (VERBOSE) System.out.println("$E : (syntax) the character that precedes the number have to be ^ or v, got " + coup.charAt(2));
                         retval.clear();
                         return retval;
                     }
                 }
-                if (coup.length() > 3 && coup.charAt(3) != '’') {
-                    if (VERBOSE) System.out.println("#E : (syntax) the second character that precedes the number have to be ’, got " + coup.charAt(3));
+                if (coup.length() > 3 && coup.charAt(3) != '\'') {
+                    if (VERBOSE) System.out.println("$E : (syntax) the second character that precedes the number have to be ', got " + coup.charAt(3));
                     retval.clear();
                     return retval;
                 }
             } catch(IndexOutOfBoundsException e) {
-                if (VERBOSE) System.out.println("#E : (syntax) the character that precedes the number have to be ^ or v, got nothing");
+                if (VERBOSE) System.out.println("$E : (syntax) the character that precedes the number have to be ^ or v, got nothing");
                 retval.clear();
                 return retval;
             }
@@ -150,7 +150,7 @@ public class Application {
             Stack.TypeStack type = coup.charAt(2) == '^' ? Stack.TypeStack.ASC : Stack.TypeStack.DESC;
             retval.add(new Action(card, type, coup.length() > 3));
         }
-        if (VERBOSE) System.out.println("#I : vous avez joué : " + retval);
+        if (VERBOSE) System.out.println("$I : vous avez joué : " + retval);
         return retval;
     }
 }
