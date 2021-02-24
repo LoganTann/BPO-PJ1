@@ -2,8 +2,7 @@ package appli;
 /**
  * BadMoveException est juste un alias de Exception mais je veux spécifier explicitement que l'on rejette bien la faute
  * au <b>coup</b> du joueur, et non la faute du programmeur
- * Les messages d'erreurs ne seront pas visibles (et donc inutiles), mais pourraient peut être devenir pratiques si
- * jamais on souhaite rendre le jeu verbeux dans le futur .
+ * Les messages d'erreurs sont utiles uniquement lorsque le mode verbeux est activé.
 */
 public class BadMoveException extends Exception {
     public BadMoveException() { super(); }

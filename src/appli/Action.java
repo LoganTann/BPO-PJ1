@@ -28,8 +28,8 @@ public class Action {
     public String toString() {
         StringBuilder retval = new StringBuilder();
         if (this.card < 10) retval.append(0);
-        retval.append(this.card);
-        retval.append( (this.type == Stack.TypeStack.ASC) ? "^" : "v");
+        retval  .append(this.card)
+                .append( (this.type == Stack.TypeStack.ASC) ? "^" : "v");
         if (this.playsInEnemyStack) retval.append("’");
         return retval.toString();
     }
@@ -58,32 +58,37 @@ public class Action {
         return this.card % 10 == top % 10;
     }
 
-    // aurait pu être public, mais vu comment c'est appelé, bah autant laisser tel quel
+    /***
+     * Détecte si le coup peut être joué
+     * @param me Le joueur qui exécute le coup
+     * @param you Le joueur adverse
+     * @throws BadMoveException Si le coup n'est pas jouable. Le coup est donc valide si aucune erreur n'est jetée.
+     * @implNote Aurait pu être public, mais vu comment c'est appelé, bah autant laisser tel quel
+     */
     private void validMove (Player me, Player you) throws BadMoveException {
         if (this.playsInEnemyStack) {
-            Stack StackAsc = you.getStack(Stack.TypeStack.ASC), StackDesc = you.getStack(Stack.TypeStack.DESC);
-            if (this.card > StackAsc.getCardOnTop() || this.card < StackDesc.getCardOnTop()) {
-                String sout = "Le coup ne respecte pas la règle « la carte doit être plus petite sur la pile ascendante"
-                            + " adverse, et plus grande sur la pile descendante adverse », ou bien vous avez joué plus "
-                            + "d'une fois la même carte \n";
-                sout += String.format(
-                            "Dump : DESC=%02d card=%02d ASC=%02d",
-                            StackAsc.getCardOnTop(), this.card, StackDesc.getCardOnTop()
-                );
-                throw new BadMoveException(sout);
+            String errMsg = "Le coup" + this.toString() + "ne respecte pas la règle « la carte doit être plus \n"
+                    + "RÈGLE adverse», ou bien vous avez joué plus d'une fois \nla même carte \n";
+            Stack stackToCheck = you.getStack(this.type);
+
+            if (this.type == Stack.TypeStack.ASC && this.card >= stackToCheck.getCardOnTop()) {
+                throw new BadMoveException(errMsg.replace("RÈGLE", "petite sur la pile ascendante"));
+            }
+            if (this.type == Stack.TypeStack.DESC && this.card <= stackToCheck.getCardOnTop()) {
+                throw new BadMoveException(errMsg.replace("RÈGLE", "grande sur la pile descendante"));
             }
         } else {
-            Stack StackAsc = me.getStack(Stack.TypeStack.ASC), StackDesc = me.getStack(Stack.TypeStack.DESC);
-            if (this.card < StackAsc.getCardOnTop() || this.card > StackDesc.getCardOnTop()) {
-                int top = (this.type == Stack.TypeStack.ASC) ? StackAsc.getCardOnTop() : StackDesc.getCardOnTop();
-                if (this.card % 10 != top % 10) {
-                    String sout = "Le coup ne respecte pas la règle « la carte doit être plus grande sur la pile "
-                            + "ascendante adverse, et plus petite sur la pile descendante adverse », ni la règle des"
-                            + " multiples de dix, ou bien vous avez joué plus d'une fois la même carte \n";
-                    sout += String.format("Dump : DESC=%02d card=%02d ASC=%02d",
-                            this.card, StackAsc.getCardOnTop(), StackDesc.getCardOnTop());
-                    throw new BadMoveException(sout);
-                }
+            String errMsg = "Le coup" + this.toString() + "ne respecte pas la règle « la carte doit être plus \n"
+                    + "RÈGLE », ni la règle des multiples de dix, ou bien\n vous avez joué plus d'une fois la "
+                    + "même carte \n";
+            Stack stackToCheck = me.getStack(this.type);
+            int top = stackToCheck.getCardOnTop();
+
+            if ( (this.type == Stack.TypeStack.ASC && this.card <= top) && this.card % 10 != top % 10) {
+                throw new BadMoveException(errMsg.replace("RÈGLE", "petite que votre pile ascendante"));
+            }
+            if ( (this.type == Stack.TypeStack.DESC && this.card >= top) && this.card % 10 != top % 10) {
+                throw new BadMoveException(errMsg.replace("RÈGLE", "grande que votre pile descendante"));
             }
         }
     }
