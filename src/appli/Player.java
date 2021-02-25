@@ -1,6 +1,7 @@
 package appli;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * @author Antoine <antoine@jiveoff.fr> on 01/02/2021
@@ -8,58 +9,60 @@ import java.util.ArrayList;
  */
 public class Player {
 
-    private String name;
+    /** name : son nom (attendu NORD ou SUD)*/
+    private final String name;
 
-    /**
-     * @brief pack : la pioche du joueur
-     */
+    /** pack : la pioche du joueur */
     private Pack pack;
-    /**
-     * @brief stack/ stackDESC : les deux pile de cartes du joueur
-     */
+    private Pack pack_save;
+
+    /** stackASC / stackDESC : les deux piles de cartes du joueur */
     private Stack stackASC, stackDESC;
+    private Stack stackASC_save, stackDESC_save;
+
+    /** hand : les cartes qui se trouvent dans la main du joueur*/
     private ArrayList<Integer> hand;
+    private ArrayList<Integer> hand_save;
 
     /***
-     * @brief Constructeur de l'entité Joueur
+     * Constructeur de l'entité Joueur
      * @param name son joli nom pour l'affichage
      */
     public Player(String name) {
+        assert name.length() < 5 : "Le nom ne doit pas excéder 4 caractères. Valeur conseillée : NORD ou SUD.";
         this.name = name;
 
-        pack = new Pack(1, 60);
-        stackASC = new Stack(Stack.TypeStack.ASC, pack);
-        stackDESC = new Stack(Stack.TypeStack.DESC, pack);
+        this.pack = new Pack(1, 60);
+        this.stackASC = new Stack(Stack.TypeStack.ASC);
+        this.stackDESC = new Stack(Stack.TypeStack.DESC);
 
-        try {
-            this.putDownCard(pack, stackASC, 1);
-            this.putDownCard(pack, stackDESC, 60);
-        } catch(Exception e) {
-            System.out.println("Une erreur est survenue: " + e.getMessage());
-        }
+        this.stackASC.addCard( this.pack.pickCard(0) );
+        this.stackDESC.addCard( this.pack.pickLastCard() );
 
-        this.generateHand();
-    }
+        // à partir du moment où on mélange, prendre la première carte équivaut à prendre une carte du paquet au hasard
+        this.pack.shuffle();
 
-    private void generateHand() {
-
-        this.hand = new ArrayList<Integer>();
-
+        // génération de la main
+        this.hand = new ArrayList<>();
         for(int i = 0; i < 6; ++i) {
-            // TODO : ça pique les yeux
-            this.hand.add(this.pack.getPack().get(0));
-            this.pack.getPack().remove(0);
+            this.hand.add( this.pack.pickFirstCard() ); // < R to L :prendre la première carte et l'ajouter dans la main
         }
-
     }
 
     public String toString() {
         // possible todo : string builder pour impressionner le prof mm si c'est moche
-        return this.name + " " + stackASC.toString() + " " + stackDESC.toString() + " (m" + this.hand.size() + "p" + this.pack.getPack().size() + ")";
+        String retval = String.format("%-5s", this.name);
+        retval += stackASC.toString() + " " + stackDESC.toString();
+        retval += " (m" + this.hand.size() + "p" + this.pack.getPack().size() + ")";
+        return retval;
     }
 
-    // todo : meilleur nom ou contenu au besoin
-    public String handString() {
+    public String getName() {
+        return this.name;
+    }
+
+    public String hand_toString() {
+        // cartes NORD { 15 20 23 32 41 48 }
         StringBuilder retval = new StringBuilder("cartes ");
         retval.append(this.name);
         retval.append(" { ");
@@ -70,38 +73,75 @@ public class Player {
         retval.append("}");
         return retval.toString();
     }
-    // cartes NORD { 15 20 23 32 41 48 }
 
-    /**
-     * @brief Permet de déplacer une carte d'une pioche vers une pile de cartes
-     * @param from Pack dont la carte sera prélevée
-     * @param to Stack dont cette même carte va être déposée
-     * @param card la **valeur** (et non l'index) de la carte qui sera prélevée
-     * @throws Exception
-     */
-    private void putDownCard(Pack from, Stack to, int card) throws Exception {
-        // TODO : faire une méthode exists() au lieu de from.getPack().indexOf(card)
-        if (!from.exists(card)) {
-            throw new Exception("La carte à déplacer n'existe pas dans le paquet à piocher");
-        }
-        if (to.exists(card)) {
-            throw new Exception("La carte à déplacer existe déjà dans le paquet de destination");
-        }
-        // TODO : check la dizaine sur la stack
-
-        from.removeCard(card);
-        to.addCard(card);
+    public boolean hadNoMoreCards() {
+        return this.pack.isEmpty();
     }
 
-    /**
-     * @brief permet de gérer l'action
-     * @param number
-     * @param source
-     * @return
-     */
-    public boolean completeWithCards(int number, Pack source) {
-        // todo
-        return true;
+    public void addCardsToHaveSixInHand() {
+        while (this.hand.size() < 6) {
+            this.pickCardAndAddInHand();
+        }
+    }
+    public void pickCardAndAddInHand() {
+        this.hand.add( this.pack.pickCard(0) );
     }
 
+    public Stack getStack(Stack.TypeStack type) {
+        return (type == Stack.TypeStack.ASC) ? this.stackASC : this.stackDESC;
+    }
+
+    public boolean removeCardFromHand(int cardValue) {
+        // cast nécessaire pour éviter confusion avec la surcharge .remove(int index);
+        return this.hand.remove((Object) cardValue);
+    }
+    public boolean canRemoveFromHand(int cardValue) {
+        return this.hand.contains(cardValue);
+    }
+
+    public void sortHand() {
+        Collections.sort(this.hand);
+    }
+
+    public void putDown(Player cardSource, Action theAction) throws BadMoveException {
+        int card = theAction.getCard();
+        if (!cardSource.removeCardFromHand(card)) {
+            throw new BadMoveException("La carte du coup " + theAction.toString() + " n'existe même pas dans votre main...");
+        }
+        Stack target = this.getStack(theAction.getType());
+        target.addCard(card);
+    }
+
+    public void save() {
+        this.pack_save = new Pack(this.pack);
+        this.stackASC_save = new Stack(this.stackASC);
+        this.stackDESC_save = new Stack(this.stackDESC);
+        this.hand_save = new ArrayList<>(this.hand);
+    }
+    public void restoreSave() {
+        this.pack = this.pack_save;
+        this.stackASC = this.stackASC_save;
+        this.stackDESC = this.stackDESC_save;
+        this.hand = this.hand_save;
+    }
+
+
+    /*                      /!\ ATTENTION : /!\
+       ces setteurs sont utilisés seulement à des fins de tests unitaires
+    */
+    public void setPack(Pack pack) {
+        this.pack = pack;
+    }
+
+    public void setStackASC(Stack stackASC) {
+        this.stackASC = stackASC;
+    }
+
+    public void setStackDESC(Stack stackDESC) {
+        this.stackDESC = stackDESC;
+    }
+
+    public void setHand(ArrayList<Integer> hand) {
+        this.hand = hand;
+    }
 }

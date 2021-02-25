@@ -5,109 +5,152 @@ import java.util.Scanner;
 
 public class Application {
 
+    public static boolean VERBOSE = false;
+
+    public static void init_VERBOSE(String[] args) {
+        for (String elem: args) {
+            if (elem.contains("-v") || elem.contains("--verbose")) {
+                VERBOSE = true;
+                System.out.println("$I : Mode verbeux activé");
+                break;
+            }
+        }
+    }
+
     public static void main(String[] args) {
+        init_VERBOSE(args);
+
         Player NORD = new Player("NORD");
         Player SUD = new Player("SUD");
-        boolean tictac = true;
+        boolean NORD_plays = true;
 
-        while (true) {
+        boolean isPlaying = true;
+        while (isPlaying) {
             // affichage des infos des joueurs :
             System.out.println(NORD);
             System.out.println(SUD);
-            // C'est le tour de nord ou sud :
-            if (tictac) {
-                loop(NORD, SUD);
-            } else {
-                loop(SUD, NORD);
+
+            try {
+                // C'est le tour de nord ou sud :
+                if (NORD_plays) {
+                    turn(NORD, SUD);
+                } else {
+                    turn(SUD, NORD);
+                }
+            } catch (WinnerException thePlayer) {
+                System.out.println("partie finie, " + thePlayer.getMessage() + " a gagné");
+                isPlaying = false;
+            } catch (LoserException thePlayer) {
+                String winnerName = thePlayer.toString().equals(NORD.getName()) ? SUD.getName() : NORD.getName();
+                System.out.println("partie finie, " + winnerName + " a gagné");
+                isPlaying = false;
             }
-            // todo : gestion d'erreurs en cas de loserException ou winnerException
+
+            NORD_plays = !NORD_plays;
         }
     }
 
-    public static void loop(Player me, Player you) {
-        // TODO : throw un loserException ou winnerException (créer ces types d'exceptions
+    public static void turn(Player me, Player opponent) throws WinnerException, LoserException {
+        me.sortHand();
+        System.out.println(me.hand_toString());
 
-        System.out.println(me.handString());
-
-        boolean error = false;
+        boolean showErrorPrompt = false, requestValidMove = true;
         String input;
         Scanner sc = new Scanner(System.in);
 
-        // (si ne peut pas jouer deux cartes, alors throw PerduException(me.getname))
+        // TODO : (si ne peut pas jouer deux cartes, alors throw new PerduException(me.getName())
 
-        // la boucle suivante sera arrêtée lorsque l'entrée sera valide et les coups joués.
-        do {
-            System.out.print((error) ? "#> " : "> ");
+        while (requestValidMove) {
+            System.out.print((showErrorPrompt) ? "#> " : "> ");
             input = sc.nextLine();
-            // vrai si l'entrée ne respecte pas le format [carte][designation de pile]
-            // Si tel est le cas, on va relancer la boucle <=> redemander l'entrée avec le prompt modifié
-            // todo : meilleure solution
-            ArrayList<Action> parsedActions = inputFormatValid(input);
-            error = parsedActions.size() <= 0;
-            if (error) continue;
 
-            // indique si on a posé une carte sur un tas ennemi
-            // en effet, on ne peut poser qu'une seule carte dans ce tas par tour !
+            // Interprétation de l'entrée
+            ArrayList<Action> parsedActions = parseInput(input);
+            showErrorPrompt = parsedActions.size() < 2;
+            if (showErrorPrompt) {
+                if (VERBOSE) System.out.println("$E : Syntax error or not enough moves");
+                continue;
+            }
+
+            // Exécution de l'entrée
             boolean playedEnemy = false;
+            me.save();
+            opponent.save();
+            try {
+                for (Action action: parsedActions) {
+                    playedEnemy = action.handlePlayingInEnemyStack(playedEnemy);
+                    action.execute(me, opponent);
+                }
+            } catch (BadMoveException err) {
+                me.restoreSave();
+                opponent.restoreSave();
+                showErrorPrompt = true;
+                if (VERBOSE) System.out.println("$E : " + err.toString());
+                continue;
+            }
 
-            // pour chaque action entrée durant ce tour :
-            /*
-                interpréter le coup
-				si posé sur sa base :
-					si peut pas poser, error = true, continue
-				si base adverse :
-					si playedEnemy, error = true, continue
-					si peut pas poser, idem
-					playedEnemy = true
+            // Conditions de fin de tour
+            if (me.hadNoMoreCards()) {
+                throw new WinnerException(me.getName());
+            }
+            if (playedEnemy) {
+                me.addCardsToHaveSixInHand();
+            } else {
+                me.pickCardAndAddInHand();
+                me.pickCardAndAddInHand();
+            }
 
-			if (playedEnemy) (compléter 6 cartes)
-			else (piocher 2 cases)
-			idem pour la base de l'autre
-			break; (car on aurait eu continue avant en cas de pb)
-             */
-
-        } while (true);
+            // fin du tour
+            requestValidMove = false;
+        }
 
     }
 
+
     /**
-     * @brief Vérifie (actuellement) si l'entrée est valide
-     * @param input
-     * @return
+     * Décompose et vérifie l'entrée de l'utilisateur en un tableau d'actions interprétables par le programme.
+     * @param input (String) l'entrée de l'utilisateur
+     * @return un ArrayList contenant chaque actions (type Action). Vide si entrée invalide.
      */
-    public static ArrayList<Action> inputFormatValid(String input) {
-        // todo : rendre + beau ce code
-        ArrayList<Action> actions = new ArrayList<Action>();
+    public static ArrayList<Action> parseInput(String input) {
+        ArrayList<Action> retval = new ArrayList<>();
 
         String[] coups = input.split(" ");
         for (String coup : coups) {
-            // 02v ou 04^ ou 59v
+
             int card;
             try {
-                card = Integer.parseInt(coup.substring(0, 1));
-            } catch(NumberFormatException e) {
-                actions.clear();
-                return actions;
+                card = Integer.parseInt(coup.substring(0, 2));
+            } catch(NumberFormatException | StringIndexOutOfBoundsException e) {
+                if (VERBOSE) System.out.println("$E : (syntax) " + e);
+                retval.clear();
+                return retval;
             }
+
             try {
                 if (coup.charAt(2) != '^') {
                     if (coup.charAt(2) != 'v') {
-                        actions.clear();
-                        return actions;
+                        if (VERBOSE) System.out.println("$E : (syntax) the character that precedes the number have to be ^ or v, got " + coup.charAt(2));
+                        retval.clear();
+                        return retval;
                     }
                 }
-                if (coup.length() > 3 && coup.charAt(3) != '’') {
-                    actions.clear();
-                    return actions;
+                if (coup.length() > 3 && coup.charAt(3) != '\'') {
+                    if (VERBOSE) System.out.println("$E : (syntax) the second character that precedes the number have to be ', got " + coup.charAt(3));
+                    retval.clear();
+                    return retval;
                 }
             } catch(IndexOutOfBoundsException e) {
-                actions.clear();
-                return actions;
+                if (VERBOSE) System.out.println("$E : (syntax) the character that precedes the number have to be ^ or v, got nothing");
+                retval.clear();
+                return retval;
             }
 
-            actions.add(new Action(card, (coup.charAt(2) == '^' ? Stack.TypeStack.ASC : Stack.TypeStack.DESC), coup.length() > 3));
+            // si on en est là, c'est que la syntaxe est valide
+            Stack.TypeStack type = coup.charAt(2) == '^' ? Stack.TypeStack.ASC : Stack.TypeStack.DESC;
+            retval.add(new Action(card, type, coup.length() > 3));
         }
-        // TODO : coup jouable
-        return actions;
+        if (VERBOSE) System.out.println("$I : vous avez joué : " + retval);
+        return retval;
     }
 }
