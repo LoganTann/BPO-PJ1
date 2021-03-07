@@ -53,11 +53,6 @@ public class Action {
         return currentState;
     }
 
-    private boolean multiplesOfTenValid(Stack stackAsc, Stack stackDesc) {
-        int top = (this.type == Stack.TypeStack.ASC) ? stackAsc.getCardOnTop() : stackDesc.getCardOnTop();
-        return this.card % 10 == top % 10;
-    }
-
     /***
      * Détecte si le coup peut être joué
      * @param me Le joueur qui exécute le coup

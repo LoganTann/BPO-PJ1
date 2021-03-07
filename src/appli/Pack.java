@@ -64,10 +64,12 @@ public class Pack {
      *      que par son <b>indice</b>.
      */
     public int pickCard(int index) {
-        // TODO : vérif si y'a plus de cartes dans le paquet
-        int retval = this.pack.get(index);
-        this.pack.remove(index);
-        return retval;
+        if(this.getPackLength() > 0) {
+            int retval = this.pack.get(index);
+            this.pack.remove(index);
+            return retval;
+        }
+        return -1;
     }
 
     /**
