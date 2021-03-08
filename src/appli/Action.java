@@ -66,10 +66,10 @@ public class Action {
                     + "RÈGLE adverse», ou bien vous avez joué plus d'une fois la même carte";
             Stack stackToCheck = you.getStack(this.type);
 
-            if (this.type == Stack.TypeStack.ASC && this.card <= stackToCheck.getCardOnTop()) {
+            if (this.type == Stack.TypeStack.ASC && this.card >= stackToCheck.getCardOnTop()) {
                 throw new BadMoveException(errMsg.replace("RÈGLE", "petite sur la pile ascendante"));
             }
-            if (this.type == Stack.TypeStack.DESC && this.card >= stackToCheck.getCardOnTop()) {
+            if (this.type == Stack.TypeStack.DESC && this.card <= stackToCheck.getCardOnTop()) {
                 throw new BadMoveException(errMsg.replace("RÈGLE", "grande sur la pile descendante"));
             }
         } else {

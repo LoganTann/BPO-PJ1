@@ -130,12 +130,13 @@ public class Player {
 
     public boolean canPlay(Player you) {
         int canPlaySize = 0;
-        if(Application.VERBOSE) System.out.print("$V : Coups possibles: ");
+        boolean playedInAdversaire = false;
+        System.out.print("$V : Coups possibles: ");
         for (int c: this.hand) {
             Action test = new Action(c, Stack.TypeStack.ASC, false);
             try {
                 test.validMove(this, you);
-                if(Application.VERBOSE) System.out.print(test + " ");
+                System.out.print(test + " ");
                 canPlaySize++;
                 continue;
             } catch(BadMoveException ignored) {}
@@ -143,7 +144,7 @@ public class Player {
             test = new Action(c, Stack.TypeStack.DESC, false);
             try {
                 test.validMove(this, you);
-                if(Application.VERBOSE) System.out.print(test + " ");
+                System.out.print(test + " ");
                 canPlaySize++;
                 continue;
             } catch(BadMoveException ignored) {}
@@ -151,19 +152,25 @@ public class Player {
             test = new Action(c, Stack.TypeStack.ASC, true);
             try {
                 test.validMove(this, you);
-                if(Application.VERBOSE) System.out.print(test + " ");
-                canPlaySize++;
+                if(!playedInAdversaire) {
+                    System.out.print(test + " ");
+                    canPlaySize++;
+                    playedInAdversaire = true;
+                }
                 continue;
             } catch(BadMoveException ignored) {}
 
             test = new Action(c, Stack.TypeStack.DESC, true);
             try {
                 test.validMove(this, you);
-                if(Application.VERBOSE) System.out.print(test + " ");
-                canPlaySize++;
+                if(!playedInAdversaire) {
+                    System.out.print(test + " ");
+                    canPlaySize++;
+                    playedInAdversaire = true;
+                }
             } catch(BadMoveException ignored) {}
         }
-        if(Application.VERBOSE) System.out.println("[" + canPlaySize + "]");
+        System.out.println("[" + canPlaySize + "]");
         return canPlaySize > 1;
     }
 
