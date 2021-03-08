@@ -60,16 +60,16 @@ public class Action {
      * @throws BadMoveException Si le coup n'est pas jouable. Le coup est donc valide si aucune erreur n'est jetée.
      * @implNote Aurait pu être public, mais vu comment c'est appelé, bah autant laisser tel quel
      */
-    private void validMove (Player me, Player you) throws BadMoveException {
+    public void validMove (Player me, Player you) throws BadMoveException {
         if (this.playsInEnemyStack) {
             String errMsg = "Le coup " + this.toString() + " ne respecte pas la règle « la carte doit être plus \n"
                     + "RÈGLE adverse», ou bien vous avez joué plus d'une fois la même carte";
             Stack stackToCheck = you.getStack(this.type);
 
-            if (this.type == Stack.TypeStack.ASC && this.card >= stackToCheck.getCardOnTop()) {
+            if (this.type == Stack.TypeStack.ASC && this.card <= stackToCheck.getCardOnTop()) {
                 throw new BadMoveException(errMsg.replace("RÈGLE", "petite sur la pile ascendante"));
             }
-            if (this.type == Stack.TypeStack.DESC && this.card <= stackToCheck.getCardOnTop()) {
+            if (this.type == Stack.TypeStack.DESC && this.card >= stackToCheck.getCardOnTop()) {
                 throw new BadMoveException(errMsg.replace("RÈGLE", "grande sur la pile descendante"));
             }
         } else {
@@ -96,6 +96,8 @@ public class Action {
             me.putDown(me,this);
         }
     }
+
+
 
     // todo : public static playable(int cardValue, Player me, Player you)
 }

@@ -58,7 +58,7 @@ public class Application {
         String input;
         Scanner sc = new Scanner(System.in);
 
-        // TODO : (si ne peut pas jouer deux cartes, alors throw new PerduException(me.getName())
+        if(!me.canPlay(opponent)) throw new LoserException(me.getName());
 
         while (requestValidMove) {
             System.out.print((showErrorPrompt) ? "#> " : "> ");
@@ -76,10 +76,14 @@ public class Application {
             boolean playedEnemy = false;
             me.save();
             opponent.save();
+
+            int movesDone = 0;
+
             try {
                 for (Action action: parsedActions) {
                     playedEnemy = action.handlePlayingInEnemyStack(playedEnemy);
                     action.execute(me, opponent);
+                    movesDone++;
                 }
             } catch (BadMoveException err) {
                 me.restoreSave();
@@ -93,11 +97,14 @@ public class Application {
             if (me.hadNoMoreCards()) {
                 throw new WinnerException(me.getName());
             }
+            System.out.print(movesDone + " cartes posées");
+
             if (playedEnemy) {
-                me.addCardsToHaveSixInHand();
+                System.out.print(", " + me.addCardsToHaveSixInHand() + " cartes piochées" + System.lineSeparator());
             } else {
                 me.pickCardAndAddInHand();
                 me.pickCardAndAddInHand();
+                System.out.print(", 2 cartes piochées" + System.lineSeparator());
             }
 
             // fin du tour
@@ -135,8 +142,8 @@ public class Application {
                         return retval;
                     }
                 }
-                if (coup.length() > 3 && coup.charAt(3) != '\'') {
-                    if (VERBOSE) System.out.println("$E : (syntax) the second character that precedes the number have to be ', got " + coup.charAt(3));
+                if (coup.length() > 3 && coup.charAt(3) != '’') {
+                    if (VERBOSE) System.out.println("$E : (syntax) the second character that precedes the number have to be ’, got " + coup.charAt(3));
                     retval.clear();
                     return retval;
                 }

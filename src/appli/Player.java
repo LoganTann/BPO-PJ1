@@ -78,10 +78,13 @@ public class Player {
         return this.pack.isEmpty();
     }
 
-    public void addCardsToHaveSixInHand() {
+    public int addCardsToHaveSixInHand() {
+        int picked = 0;
         while (this.hand.size() < 6) {
             this.pickCardAndAddInHand();
+            picked++;
         }
+        return picked;
     }
     public void pickCardAndAddInHand() {
         this.hand.add( this.pack.pickCard(0) );
@@ -125,10 +128,48 @@ public class Player {
         this.hand = this.hand_save;
     }
 
+    public boolean canPlay(Player you) {
+        int canPlaySize = 0;
+        if(Application.VERBOSE) System.out.print("$V : Coups possibles: ");
+        for (int c: this.hand) {
+            Action test = new Action(c, Stack.TypeStack.ASC, false);
+            try {
+                test.validMove(this, you);
+                if(Application.VERBOSE) System.out.print(test + " ");
+                canPlaySize++;
+                continue;
+            } catch(BadMoveException ignored) {}
+
+            test = new Action(c, Stack.TypeStack.DESC, false);
+            try {
+                test.validMove(this, you);
+                if(Application.VERBOSE) System.out.print(test + " ");
+                canPlaySize++;
+                continue;
+            } catch(BadMoveException ignored) {}
+
+            test = new Action(c, Stack.TypeStack.ASC, true);
+            try {
+                test.validMove(this, you);
+                if(Application.VERBOSE) System.out.print(test + " ");
+                canPlaySize++;
+                continue;
+            } catch(BadMoveException ignored) {}
+
+            test = new Action(c, Stack.TypeStack.DESC, true);
+            try {
+                test.validMove(this, you);
+                if(Application.VERBOSE) System.out.print(test + " ");
+                canPlaySize++;
+            } catch(BadMoveException ignored) {}
+        }
+        if(Application.VERBOSE) System.out.println("[" + canPlaySize + "]");
+        return canPlaySize > 1;
+    }
 
     /*                      /!\ ATTENTION : /!\
-       ces setteurs sont utilisés seulement à des fins de tests unitaires
-    */
+           ces setteurs sont utilisés seulement à des fins de tests unitaires
+        */
     public void setPack(Pack pack) {
         this.pack = pack;
     }
