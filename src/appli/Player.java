@@ -75,18 +75,28 @@ public class Player {
     }
 
     public boolean hadNoMoreCards() {
-        return this.pack.isEmpty();
+        return this.pack.isEmpty() && this.hand.size() == 0;
     }
 
-    public int addCardsToHaveSixInHand() {
+    public int fillCards(int targetCards) {
         int picked = 0;
-        while (this.hand.size() < 6) {
+        while (!this.pack.isEmpty() && this.hand.size() < targetCards) {
             this.pickCardAndAddInHand();
             picked++;
         }
         return picked;
     }
-    public void pickCardAndAddInHand() {
+
+    public int pickCards(int cardsToPick) {
+        int picked = 0;
+        while (!this.pack.isEmpty() && picked < cardsToPick) {
+            this.pickCardAndAddInHand();
+            picked++;
+        }
+        return picked;
+    }
+
+    private void pickCardAndAddInHand() {
         this.hand.add( this.pack.pickCard(0) );
     }
 

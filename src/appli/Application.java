@@ -41,7 +41,7 @@ public class Application {
                 System.out.println("partie finie, " + thePlayer.getMessage() + " a gagné");
                 isPlaying = false;
             } catch (LoserException thePlayer) {
-                String winnerName = thePlayer.toString().equals(NORD.getName()) ? SUD.getName() : NORD.getName();
+                String winnerName = thePlayer.toString().equals(NORD.getName()) ? NORD.getName() : SUD.getName();
                 System.out.println("partie finie, " + winnerName + " a gagné");
                 isPlaying = false;
             }
@@ -100,11 +100,9 @@ public class Application {
             System.out.print(movesDone + " cartes posées");
 
             if (playedEnemy) {
-                System.out.print(", " + me.addCardsToHaveSixInHand() + " cartes piochées" + System.lineSeparator());
+                System.out.print(", " + me.fillCards(6) + " cartes piochées" + System.lineSeparator());
             } else {
-                me.pickCardAndAddInHand();
-                me.pickCardAndAddInHand();
-                System.out.print(", 2 cartes piochées" + System.lineSeparator());
+                System.out.print(", " + me.pickCards(2) + " cartes piochées" + System.lineSeparator());
             }
 
             // fin du tour
