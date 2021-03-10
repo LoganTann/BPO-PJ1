@@ -152,6 +152,9 @@ public class PlayerTest {
 		assertEquals(0, nord.fillCards(6));
 	}
 	
+	/*
+	Tests à compléter
+
 	@Test
 	public void testPutDown() {
 		fail("Not yet implemented");
@@ -166,9 +169,7 @@ public class PlayerTest {
 	@Test
 	public void testCanPlay() {
 		fail("Not yet implemented");
-	}
-
-	
+	}*/
 	
 	// HORS TEST
 	private void setPack(Player p, int[] values) {
