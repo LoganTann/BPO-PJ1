@@ -32,7 +32,7 @@ public class Player {
         assert name.length() < 5 : "Le nom ne doit pas excéder 4 caractères. Valeur conseillée : NORD ou SUD.";
         this.name = name;
 
-        this.pack = new Pack(1, 60);
+        this.pack = new Pack();
         this.stackASC = new Stack(Stack.TypeStack.ASC);
         this.stackDESC = new Stack(Stack.TypeStack.DESC);
 
@@ -64,14 +64,11 @@ public class Player {
     public String hand_toString() {
         // cartes NORD { 15 20 23 32 41 48 }
         StringBuilder retval = new StringBuilder("cartes ");
-        retval.append(this.name);
-        retval.append(" { ");
+        retval.append(this.name).append(" { ");
         for (int carte : this.hand) {
-            retval.append(carte < 10 ? ("0" + carte) : carte);
-            retval.append(" ");
+            retval.append(carte < 10 ? ("0" + carte) : carte).append(" ");
         }
-        retval.append("}");
-        return retval.toString();
+        return retval.append("}").toString();
     }
 
     public boolean hadNoMoreCards() {
