@@ -22,7 +22,7 @@ public class Player {
 
     /** hand : les cartes qui se trouvent dans la main du joueur*/
     private ArrayList<Integer> hand;
-    private ArrayList<Integer> hand_save;
+	private ArrayList<Integer> hand_save;
 
     /***
      * Constructeur de l'entité Joueur
@@ -50,10 +50,9 @@ public class Player {
     }
 
     public String toString() {
-        // possible todo : string builder pour impressionner le prof mm si c'est moche
         String retval = String.format("%-5s", this.name);
         retval += stackASC.toString() + " " + stackDESC.toString();
-        retval += " (m" + this.hand.size() + "p" + this.pack.getPack().size() + ")";
+        retval += " (m" + this.hand.size() + "p" + this.pack.getPackLength() + ")";
         return retval;
     }
 
@@ -190,16 +189,22 @@ public class Player {
     public void setPack(Pack pack) {
         this.pack = pack;
     }
-
-    public void setStackASC(Stack stackASC) {
-        this.stackASC = stackASC;
-    }
-
-    public void setStackDESC(Stack stackDESC) {
-        this.stackDESC = stackDESC;
-    }
+    public Pack getPack() {
+		return pack;
+	}
 
     public void setHand(ArrayList<Integer> hand) {
         this.hand = hand;
     }
+	public ArrayList<Integer> getHand() {
+		return hand;
+	}
+	
+    public void setStackASC(Stack stackASC) {
+        this.stackASC = stackASC;
+    }
+    public void setStackDESC(Stack stackDESC) {
+        this.stackDESC = stackDESC;
+    }
+
 }
