@@ -1,3 +1,4 @@
+package test;
 import appli.Pack;
 import org.junit.Before;
 import org.junit.Test;
