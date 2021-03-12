@@ -56,7 +56,7 @@ public class PackTest {
      * @see constructors() "array sorted ?"
      */
     @Test
-    public void pickCardMethods_and_getPackLenght() {
+    public void pickCardMethods_and_getPackLength() {
     	// 60 cards by default
     	assertEquals(60, packDefault.getPackLength());
     	
@@ -78,16 +78,16 @@ public class PackTest {
     @Test
     public void cloneConstructor() {
         Pack packClone = new Pack(packDefault);
-        assertTrue(packDefault.getPack().equals(packClone.getPack()));
+        assertEquals(packDefault.getPack(), packClone.getPack());
         
         packDefault.pickCard(0);
         packDefault.pickCard(5);
         packDefault.pickCard(0);
-        assertFalse(packDefault.getPack().equals(packClone.getPack()));
+        assertNotEquals(packDefault.getPack(), packClone.getPack());
         
         // can be used for savestate system
         packDefault = packClone;
-        assertTrue(packDefault.getPack().equals(packClone.getPack()));
+        assertEquals(packDefault.getPack(), packClone.getPack());
     }
     
     /**
@@ -97,11 +97,11 @@ public class PackTest {
     public void shuffle_and_exists() {
         Pack sorted = new Pack();
     	Pack toShuffle = new Pack();
-        assertTrue(sorted.getPack().equals(toShuffle.getPack()));
+        assertEquals(sorted.getPack(), toShuffle.getPack());
         
         toShuffle.shuffle();
 
-        assertFalse(sorted.getPack().equals(toShuffle.getPack()));
+        assertNotEquals(sorted.getPack(), toShuffle.getPack());
         assertEquals(sorted.getPackLength(), toShuffle.getPackLength());
         for (int card: sorted.getPack()) {
         	assertTrue(toShuffle.exists(card));

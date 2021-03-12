@@ -153,25 +153,6 @@ public class PlayerTest {
 		assertEquals(0, nord.fillCards(6));
 	}
 	
-	/*
-	Tests à compléter
-
-	@Test
-	public void testPutDown() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testSavestateSystem() {
-		// save, restoresave
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testCanPlay() {
-		fail("Not yet implemented");
-	}*/
-	
 	// HORS TEST
 	private void setPack(Player p, int[] values) {
 		nord.getPack().getPack().clear();
