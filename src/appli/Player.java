@@ -140,12 +140,12 @@ public class Player {
     public boolean canPlay(Player you) {
         int canPlaySize = 0;
         boolean playedInAdversaire = false;
-        System.out.print("$V : Coups possibles: ");
+        if (Application.VERBOSE) System.out.print("$V : Coups possibles: ");
         for (int c: this.hand) {
             Action test = new Action(c, Stack.TypeStack.ASC, false);
             try {
                 test.validMove(this, you);
-                System.out.print(test + " ");
+                if (Application.VERBOSE) System.out.print(test + " ");
                 canPlaySize++;
                 continue;
             } catch(BadMoveException ignored) {}
@@ -153,7 +153,7 @@ public class Player {
             test = new Action(c, Stack.TypeStack.DESC, false);
             try {
                 test.validMove(this, you);
-                System.out.print(test + " ");
+                if (Application.VERBOSE) System.out.print(test + " ");
                 canPlaySize++;
                 continue;
             } catch(BadMoveException ignored) {}
@@ -162,7 +162,7 @@ public class Player {
             try {
                 test.validMove(this, you);
                 if(!playedInAdversaire) {
-                    System.out.print(test + " ");
+                    if (Application.VERBOSE) System.out.print(test + " ");
                     canPlaySize++;
                     playedInAdversaire = true;
                 }
@@ -173,13 +173,13 @@ public class Player {
             try {
                 test.validMove(this, you);
                 if(!playedInAdversaire) {
-                    System.out.print(test + " ");
+                    if (Application.VERBOSE) System.out.print(test + " ");
                     canPlaySize++;
                     playedInAdversaire = true;
                 }
             } catch(BadMoveException ignored) {}
         }
-        System.out.println("[" + canPlaySize + "]");
+        if (Application.VERBOSE) System.out.println("[" + canPlaySize + "]");
         return canPlaySize > 1;
     }
 
