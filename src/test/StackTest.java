@@ -8,7 +8,10 @@ import org.junit.Test;
 import appli.Stack;
 
 /**
- * @author logan
+ * StackTest.java
+ * Classe permettant les tests unitaires des Stacks.
+ * @author Antoine <antoine@jiveoff.fr> & Logan Tann
+ * @project Projet-BPO
  */
 public class StackTest {
 

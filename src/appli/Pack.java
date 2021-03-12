@@ -1,3 +1,10 @@
+/**
+ * Pack.java
+ * Classe permettant la création des packs de cartes.
+ * @author Antoine <antoine@jiveoff.fr> & Logan Tann
+ * @project Projet-BPO
+ */
+
 package appli;
 
 import java.util.Collections;

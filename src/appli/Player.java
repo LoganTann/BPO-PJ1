@@ -1,12 +1,15 @@
+/**
+ * Player.java
+ * Classe permettant la création et la manipulation des joueurs.
+ * @author Antoine <antoine@jiveoff.fr> & Logan Tann
+ * @project Projet-BPO
+ */
+
 package appli;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
-/**
- * @author Antoine <antoine@jiveoff.fr> on 01/02/2021
- * @project BPO-PJ1
- */
 public class Player {
 
     /** name : son nom (attendu NORD ou SUD)*/

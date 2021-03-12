@@ -11,9 +11,10 @@ import appli.Player;
 import appli.Stack;
 
 /**
- * 
- * @author logan
- *
+ * PlayerTest.java
+ * Classe permettant les tests unitaires des Players.
+ * @author Antoine <antoine@jiveoff.fr> & Logan Tann
+ * @project Projet-BPO
  */
 public class PlayerTest {
 

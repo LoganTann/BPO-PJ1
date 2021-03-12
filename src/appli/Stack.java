@@ -1,3 +1,10 @@
+/**
+ * Stack.java
+ * Classe permettant la création et la manipulation des piles de cartes.
+ * @author Antoine <antoine@jiveoff.fr> & Logan Tann
+ * @project Projet-BPO
+ */
+
 package appli;
 
 public class Stack {

@@ -7,6 +7,12 @@ import static org.junit.Assert.*;
 
 import java.util.LinkedList;
 
+/**
+ * PackTest.java
+ * Classe permettant les tests unitaires des Packs.
+ * @author Antoine <antoine@jiveoff.fr> & Logan Tann
+ * @project Projet-BPO
+ */
 public class PackTest {
 
 	private Pack packDefault;

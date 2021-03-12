@@ -3,6 +3,12 @@ package appli;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+/**
+ * Application.java
+ * Programme principal du programme.
+ * @author Antoine <antoine@jiveoff.fr> & Logan Tann
+ * @project Projet-BPO
+ */
 public class Application {
 
     public static boolean VERBOSE = false;

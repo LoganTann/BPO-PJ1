@@ -1,10 +1,12 @@
+/**
+ * Action.java
+ * Classe permettant de vérifier l'intégrité des coups et de les exécuter dans les piles renseignées.
+ * @author Antoine <antoine@jiveoff.fr> & Logan Tann
+ * @project Projet-BPO
+ */
+
 package appli;
 
-/**
- *
- * @author Antoine <antoine@jiveoff.fr> on 01/02/2021
- * @project BPO-PJ1
- */
 public class Action {
     private final int card;
     private final Stack.TypeStack type;
@@ -98,8 +100,4 @@ public class Action {
             me.putDown(me,this);
         }
     }
-
-
-
-    // todo : public static playable(int cardValue, Player me, Player you)
 }
