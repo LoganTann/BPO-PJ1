@@ -57,7 +57,7 @@ public class Pack {
      * Récupère une carte dans le paquet (autrement dit, supprime la carte donné sa position + retourne sa valeur)
      *
      * @param index L'indice de la carte. La carte concernée sera supprimée du paquet.
-     * @return La valeur de la carte.
+     * @return La valeur de la carte. Si il n'y a plus de cartes dans le paquet, retourne -1.
      * @implNote On spécifie la carte par son <b>indice</b> et non sa <b>valeur</b> ! On peut tirer partie (ou PAS...)
      *       de cette méthode d'implémentation.
      * @see this.getPack() pour récupérer le paquet. Cela pourrait être utile pour intervenir par <b>valeur</b> plutôt
@@ -86,7 +86,7 @@ public class Pack {
      * @implNote Une fois le paquet mélangé, cette méthode est utile pour piocher une carte au hasard.
      */
     public int pickFirstCard() {
-        return this.pickCard( 0);
+        return this.pickCard(0);
     }
 
     public boolean isEmpty() {

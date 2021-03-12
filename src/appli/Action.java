@@ -25,6 +25,9 @@ public class Action {
         this.playsInEnemyStack = adverse;
     }
 
+    /**
+     * UNUSED !! (enfin, seulement dans le mode verbose qui est désactivé durant la release)
+     */
     public String toString() {
         StringBuilder retval = new StringBuilder();
         if (this.card < 10) retval.append(0);
@@ -58,7 +61,6 @@ public class Action {
      * @param me Le joueur qui exécute le coup
      * @param you Le joueur adverse
      * @throws BadMoveException Si le coup n'est pas jouable. Le coup est donc valide si aucune erreur n'est jetée.
-     * @implNote Aurait pu être public, mais vu comment c'est appelé, bah autant laisser tel quel
      */
     public void validMove (Player me, Player you) throws BadMoveException {
         if (this.playsInEnemyStack) {
