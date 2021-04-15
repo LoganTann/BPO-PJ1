@@ -8,6 +8,8 @@
 package appli;
 
 public class Action {
+    public static final char ENEMY_MOVE_CHAR = '\'';
+
     private final int card;
     private final Stack.TypeStack type;
     private final boolean playsInEnemyStack;
@@ -35,7 +37,7 @@ public class Action {
         if (this.card < 10) retval.append(0);
         retval  .append(this.card)
                 .append( (this.type == Stack.TypeStack.ASC) ? "^" : "v");
-        if (this.playsInEnemyStack) retval.append("’");
+        if (this.playsInEnemyStack) retval.append(ENEMY_MOVE_CHAR);
         return retval.toString();
     }
 

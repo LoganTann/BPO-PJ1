@@ -111,7 +111,7 @@ public class PackTest {
     @Test
     public void isEmpty() {
     	Pack verySmallPack = new Pack(1, 2); // content : [1 2]
-    	verySmallPack.pickFirstCard(); // clears it
+    	verySmallPack.pickFirstCard(); // clears
     	verySmallPack.pickLastCard();
     	
     	assertTrue(verySmallPack.isEmpty());

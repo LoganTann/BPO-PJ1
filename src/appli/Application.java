@@ -146,8 +146,9 @@ public class Application {
                         return retval;
                     }
                 }
-                if (coup.length() > 3 && coup.charAt(3) != '’') {
-                    if (VERBOSE) System.out.println("$E : (syntax) the second character that precedes the number have to be ’, got " + coup.charAt(3));
+                if (coup.length() > 3 && coup.charAt(3) != Action.ENEMY_MOVE_CHAR) {
+                    if (VERBOSE) System.out.println("$E : (syntax) the second character that precedes the number have to be "
+                            + Action.ENEMY_MOVE_CHAR + ", got " + coup.charAt(3));
                     retval.clear();
                     return retval;
                 }
